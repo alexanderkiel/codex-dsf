@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0inb4ax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
+  <bpmn:process id="requestSimpleFeasibility" isExecutable="true" camunda:versionTag="0.1.0">
+    <bpmn:startEvent id="StartEvent" name="start">
+      <bpmn:outgoing>SequenceFlow_11k77gx</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_10c2suu" messageRef="Message_1pq9qxp" />
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="selectRequestTargets" name="select request targets" camunda:class="net.alexanderkiel.dsf.bpe.service.SelectRequestTargets">
+      <bpmn:incoming>SequenceFlow_11k77gx</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0b5s4ef</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sendTask id="sendRequestToDics" name="send request to dics" camunda:class="net.alexanderkiel.dsf.bpe.message.SendDicRequest">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="processDefinitionKey">executeSimpleFeasibility</camunda:inputParameter>
+          <camunda:inputParameter name="versionTag">0.1.0</camunda:inputParameter>
+          <camunda:inputParameter name="messageName">executeSimpleFeasibilityMessage</camunda:inputParameter>
+          <camunda:inputParameter name="profile">http://alexanderkiel.net/fhir/StructureDefinition/codex-task-execute-simple-feasibility</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0b5s4ef</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qqdr67</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${targets.entries}" camunda:elementVariable="target" />
+    </bpmn:sendTask>
+    <bpmn:sequenceFlow id="SequenceFlow_11k77gx" sourceRef="StartEvent" targetRef="selectRequestTargets" />
+    <bpmn:sequenceFlow id="SequenceFlow_0b5s4ef" sourceRef="selectRequestTargets" targetRef="sendRequestToDics" />
+    <bpmn:endEvent id="EndEvent" name="success">
+      <bpmn:incoming>Flow_0sz2m1q</bpmn:incoming>
+      <bpmn:incoming>Flow_1479yc4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_1h2vwsh">
+      <bpmn:incoming>Flow_0qqdr67</bpmn:incoming>
+      <bpmn:outgoing>Flow_0sz2m1q</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics camunda:collection="${targets.entries}" camunda:elementVariable="target" />
+      <bpmn:endEvent id="Event_0i55mqk">
+        <bpmn:incoming>Flow_0zhc6bb</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:serviceTask id="Activity_103gahn" name="aggregate query results" camunda:class="org.highmed.dsf.bpe.service.AggregateResults">
+        <bpmn:incoming>Flow_01228oh</bpmn:incoming>
+        <bpmn:outgoing>Flow_0zhc6bb</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:receiveTask id="Activity_15y7a7a" name="receive query result from DIC" messageRef="Message_18ld88c">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="correlationKey">${target.correlationKey}</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1iuvnle</bpmn:incoming>
+        <bpmn:outgoing>Flow_1mxiy48</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:startEvent id="Event_1tvmfdb">
+        <bpmn:outgoing>Flow_1iuvnle</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:sequenceFlow id="Flow_0zhc6bb" sourceRef="Activity_103gahn" targetRef="Event_0i55mqk" />
+      <bpmn:sequenceFlow id="Flow_1iuvnle" sourceRef="Event_1tvmfdb" targetRef="Activity_15y7a7a" />
+      <bpmn:sequenceFlow id="Flow_1mxiy48" sourceRef="Activity_15y7a7a" targetRef="Activity_09o61p4" />
+      <bpmn:sequenceFlow id="Flow_01228oh" sourceRef="Activity_09o61p4" targetRef="Activity_103gahn" />
+      <bpmn:serviceTask id="Activity_09o61p4" name="download MeasureReport">
+        <bpmn:incoming>Flow_1mxiy48</bpmn:incoming>
+        <bpmn:outgoing>Flow_01228oh</bpmn:outgoing>
+      </bpmn:serviceTask>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="Event_13wq5pb" attachedToRef="Activity_1h2vwsh">
+      <bpmn:outgoing>Flow_1479yc4</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_0bvcu02">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0qqdr67" sourceRef="sendRequestToDics" targetRef="Activity_1h2vwsh" />
+    <bpmn:sequenceFlow id="Flow_0sz2m1q" sourceRef="Activity_1h2vwsh" targetRef="EndEvent" />
+    <bpmn:sequenceFlow id="Flow_1479yc4" sourceRef="Event_13wq5pb" targetRef="EndEvent" />
+  </bpmn:process>
+  <bpmn:message id="Message_1pq9qxp" name="requestSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_07ayhv1" name="resultSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_0gifb86" name="computeSimpleFeasibilityMessage" />
+  <bpmn:error id="Error_0dl03kn" />
+  <bpmn:error id="Error_07exqe7" />
+  <bpmn:error id="Error_1jhmarr" />
+  <bpmn:message id="Message_0qfng3q" name="receiveMultiMedicCohortSizeResultMessage" />
+  <bpmn:message id="Message_0srg3vv" name="resultMultiMedicSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_0nmxozg" name="errorSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_1y0yxv0" name="resultMultiMedicSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_0v1bo0o" name="errorSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_10vqhu0" name="errorMultiMedicSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_1vrxfsk" name="resultMultiMedicSimpleFeasibilityMessage" />
+  <bpmn:message id="Message_18ld88c" name="resultSingleDicSimpleFeasibilityMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="requestSimpleFeasibility">
+      <bpmndi:BPMNEdge id="SequenceFlow_0b5s4ef_di" bpmnElement="SequenceFlow_0b5s4ef">
+        <di:waypoint x="370" y="155" />
+        <di:waypoint x="430" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11k77gx_di" bpmnElement="SequenceFlow_11k77gx">
+        <di:waypoint x="188" y="155" />
+        <di:waypoint x="270" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qqdr67_di" bpmnElement="Flow_0qqdr67">
+        <di:waypoint x="530" y="155" />
+        <di:waypoint x="580" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sz2m1q_di" bpmnElement="Flow_0sz2m1q">
+        <di:waypoint x="1280" y="155" />
+        <di:waypoint x="1382" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1479yc4_di" bpmnElement="Flow_1479yc4">
+        <di:waypoint x="1298" y="217" />
+        <di:waypoint x="1400" y="217" />
+        <di:waypoint x="1400" y="173" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_0vfud44_di" bpmnElement="selectRequestTargets">
+        <dc:Bounds x="270" y="115" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_1ozsjmr_di" bpmnElement="StartEvent">
+        <dc:Bounds x="152" y="137" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="160" y="180" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_1pu8i9n_di" bpmnElement="sendRequestToDics">
+        <dc:Bounds x="430" y="115" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_18syky8_di" bpmnElement="EndEvent">
+        <dc:Bounds x="1382" y="137" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1380" y="113" width="40" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h2vwsh_di" bpmnElement="Activity_1h2vwsh" isExpanded="true">
+        <dc:Bounds x="580" y="83" width="700" height="134" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1iuvnle_di" bpmnElement="Flow_1iuvnle">
+        <di:waypoint x="638" y="152" />
+        <di:waypoint x="677" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zhc6bb_di" bpmnElement="Flow_0zhc6bb">
+        <di:waypoint x="1090" y="152" />
+        <di:waypoint x="1152" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mxiy48_di" bpmnElement="Flow_1mxiy48">
+        <di:waypoint x="777" y="152" />
+        <di:waypoint x="830" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01228oh_di" bpmnElement="Flow_01228oh">
+        <di:waypoint x="930" y="152" />
+        <di:waypoint x="990" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_15y7a7a_di" bpmnElement="Activity_15y7a7a">
+        <dc:Bounds x="677" y="112" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1tvmfdb_di" bpmnElement="Event_1tvmfdb">
+        <dc:Bounds x="602" y="134" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l7gm0z_di" bpmnElement="Activity_09o61p4">
+        <dc:Bounds x="830" y="112" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_103gahn_di" bpmnElement="Activity_103gahn">
+        <dc:Bounds x="990" y="112" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0i55mqk_di" bpmnElement="Event_0i55mqk">
+        <dc:Bounds x="1152" y="134" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13wq5pb_di" bpmnElement="Event_13wq5pb">
+        <dc:Bounds x="1262" y="199" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

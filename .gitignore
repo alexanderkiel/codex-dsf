@@ -1,0 +1,7 @@
+/dsf-bpe-process-feasibility/target/
+/dsf-docker-test-setup/dic-1/bpe/app/process/*.jar
+/dsf-docker-test-setup/dic-1/bpe/app/last_event/time.file
+/dsf-docker-test-setup/dic-2/bpe/app/process/*.jar
+/dsf-docker-test-setup/dic-2/bpe/app/last_event/time.file
+/dsf-docker-test-setup/zars/bpe/app/process/*.jar
+/dsf-docker-test-setup/zars/bpe/app/last_event/time.file
