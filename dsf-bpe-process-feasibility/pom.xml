@@ -18,6 +18,10 @@
             <version>0.4.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>ca.uhn.hapi.fhir</groupId>
+            <artifactId>hapi-fhir-client</artifactId>
+        </dependency>
 
         <!-- test dependencies -->
         <dependency>
@@ -62,6 +66,22 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-hapi-fhir-client-to-dic-1</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>ca.uhn.hapi.fhir</groupId>
+                                    <artifactId>hapi-fhir-client</artifactId>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>../dsf-docker-test-setup/dic-1/bpe/app/plugin</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>copy-process-plugin-to-dic-2</id>
                         <phase>package</phase>
                         <goals>
@@ -76,6 +96,22 @@
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>../dsf-docker-test-setup/dic-2/bpe/app/process</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-hapi-fhir-client-to-dic-2</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>ca.uhn.hapi.fhir</groupId>
+                                    <artifactId>hapi-fhir-client</artifactId>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>../dsf-docker-test-setup/dic-2/bpe/app/plugin</outputDirectory>
                         </configuration>
                     </execution>
                     <execution>
@@ -95,6 +131,22 @@
                             <outputDirectory>../dsf-docker-test-setup/zars/bpe/app/process</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-hapi-fhir-client-to-zars</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>ca.uhn.hapi.fhir</groupId>
+                                    <artifactId>hapi-fhir-client</artifactId>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>../dsf-docker-test-setup/zars/bpe/app/plugin</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -103,21 +155,21 @@
                 <configuration>
                     <filesets>
                         <fileset>
-                            <directory>../../dsf-docker-test-setup/dic-1/bpe/app/process</directory>
+                            <directory>../dsf-docker-test-setup/dic-1/bpe/app/process</directory>
                             <includes>
                                 <include>${project.artifactId}-${project.version}.jar</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                         <fileset>
-                            <directory>../../dsf-docker-test-setup/dic-2/bpe/app/process</directory>
+                            <directory>../dsf-docker-test-setup/dic-2/bpe/app/process</directory>
                             <includes>
                                 <include>${project.artifactId}-${project.version}.jar</include>
                             </includes>
                             <followSymlinks>false</followSymlinks>
                         </fileset>
                         <fileset>
-                            <directory>../../dsf-docker-test-setup/zars/bpe/app/process</directory>
+                            <directory>../dsf-docker-test-setup/zars/bpe/app/process</directory>
                             <includes>
                                 <include>${project.artifactId}-${project.version}.jar</include>
                             </includes>

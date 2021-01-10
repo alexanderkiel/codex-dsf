@@ -16,7 +16,7 @@ import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +27,7 @@ public class FeasibilityConfig {
     private FhirWebserviceClientProvider fhirClientProvider;
 
     @Autowired
+    @Qualifier("store")
     private IGenericClient storeClient;
 
     @Autowired
@@ -37,9 +38,6 @@ public class FeasibilityConfig {
 
     @Autowired
     private FhirContext fhirContext;
-
-    @Value("${net.alexanderkiel.dsf.bpe.store.url}")
-    private String storeUrl;
 
     //
     // process requestSimpleFeasibility implementations

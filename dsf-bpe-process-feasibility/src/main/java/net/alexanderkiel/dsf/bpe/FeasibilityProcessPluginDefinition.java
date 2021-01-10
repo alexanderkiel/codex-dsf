@@ -2,6 +2,7 @@ package net.alexanderkiel.dsf.bpe;
 
 import ca.uhn.fhir.context.FhirContext;
 import net.alexanderkiel.dsf.bpe.spring.config.FeasibilityConfig;
+import net.alexanderkiel.dsf.bpe.spring.config.StoreConfig;
 import org.highmed.dsf.ProcessPluginDefinition;
 import org.highmed.dsf.fhir.resources.AbstractResource;
 import org.highmed.dsf.fhir.resources.ActivityDefinitionResource;
@@ -31,13 +32,12 @@ public class FeasibilityProcessPluginDefinition implements ProcessPluginDefiniti
 
     @Override
     public Stream<String> getBpmnFiles() {
-        return Stream.of("bpe/requestSimpleFeasibility.bpmn", "bpe/computeSimpleFeasibility.bpmn",
-                "bpe/executeSimpleFeasibility.bpmn");
+        return Stream.of("bpe/requestSimpleFeasibility.bpmn", "bpe/executeSimpleFeasibility.bpmn");
     }
 
     @Override
     public Stream<Class<?>> getSpringConfigClasses() {
-        return Stream.of(FeasibilityConfig.class);
+        return Stream.of(StoreConfig.class, FeasibilityConfig.class);
     }
 
     @Override
