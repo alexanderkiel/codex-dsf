@@ -54,6 +54,10 @@ services:
       networks:
          dic-1-fhir-backend:
             ipv4_address: 172.20.1.131
+      volumes:
+      - type: volume
+        source: dic-1-fhir-db-data
+        target: /var/lib/postgresql/data
       secrets:
       - dic-1-fhir-postgres_password
 
@@ -106,6 +110,10 @@ services:
       networks:
          dic-1-bpe-backend:
             ipv4_address: 172.20.2.131
+      volumes:
+      - type: volume
+        source: dic-1-bpe-db-data
+        target: /var/lib/postgresql/data
       secrets:
       - dic-1-bpe-postgres_password
 
@@ -152,6 +160,8 @@ services:
    zars-fhir-db:
       image: postgres:13
       restart: on-failure
+      ports:
+      - 5432:5432
       healthcheck:
          test: ["CMD-SHELL", "pg_isready -U liquibase_user -d fhir"]
          interval: 10s
@@ -164,6 +174,10 @@ services:
       networks:
          zars-fhir-backend:
             ipv4_address: 172.30.1.131
+      volumes:
+      - type: volume
+        source: zars-fhir-db-data
+        target: /var/lib/postgresql/data
       secrets:
       - zars-fhir-postgres_password
 
@@ -216,6 +230,10 @@ services:
       networks:
          zars-bpe-backend:
             ipv4_address: 172.30.2.131
+      volumes:
+      - type: volume
+        source: zars-bpe-db-data
+        target: /var/lib/postgresql/data
       secrets:
       - zars-bpe-postgres_password
 
@@ -282,3 +300,16 @@ networks:
          driver: default
          config:
          -  subnet: 172.30.2.128/25
+
+volumes:
+   dic-1-fhir-db-data:
+      name: "dic-1-fhir-db-data"
+   dic-1-bpe-db-data:
+      name: "dic-1-bpe-db-data"
+   dic-1-store-data:
+      name: "dic-1-store-data"
+
+   zars-fhir-db-data:
+      name: "zars-fhir-db-data"
+   zars-bpe-db-data:
+      name: "zars-bpe-db-data"

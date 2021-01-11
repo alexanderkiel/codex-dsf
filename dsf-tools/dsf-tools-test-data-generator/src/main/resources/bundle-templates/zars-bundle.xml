@@ -21,7 +21,7 @@
 				<type>
 					<coding>
 						<system value="http://highmed.org/fhir/CodeSystem/organization-type"/>
-						<code value="TTP"/>
+						<code value="MeDIC"/>
 					</coding>
 				</type>
 				<name value="Test ZARS"/>

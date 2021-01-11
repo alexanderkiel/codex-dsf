@@ -53,7 +53,7 @@
 			<extension url="requester-organization-type">
 				<valueCoding>
 					<system value="http://highmed.org/fhir/CodeSystem/organization-type" />
-					<code value="TTP" />
+					<code value="MeDIC" />
 				</valueCoding>
 			</extension>
 		</extension>
@@ -85,7 +85,7 @@
 			<extension url="requester-organization-type">
 				<valueCoding>
 					<system value="http://highmed.org/fhir/CodeSystem/organization-type" />
-					<code value="TTP" />
+					<code value="MeDIC" />
 				</valueCoding>
 			</extension>
 		</extension>
@@ -101,7 +101,7 @@
 			<valueCanonical value="http://highmed.org/fhir/StructureDefinition/codex-task-error-simple-feasibility" />
 		</extension>
 	</extension>
-	<url value="http://alexanderkiel.net/bpe/Process/requestSimpleFeasibility" />
+	<url value="http://highmed.org/bpe/Process/requestSimpleFeasibility" />
 	<!-- version managed by bpe -->
 	<version value="bpe-managed" />
 	<name value="requestSimpleFeasibility" />

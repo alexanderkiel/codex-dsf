@@ -40,7 +40,7 @@ public class DownloadFeasibilityResources extends AbstractServiceDelegate implem
     }
 
     @Override
-    protected void doExecute(DelegateExecution execution) throws Exception {
+    protected void doExecute(DelegateExecution execution) {
         Task task = getCurrentTaskFromExecutionVariables();
 
         IdType measureId = getMeasureId(task);

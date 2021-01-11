@@ -43,7 +43,7 @@
             <valueCanonical value="http://alexanderkiel.net/fhir/StructureDefinition/task-execute-simple-feasibility"/>
         </extension>
     </extension>
-    <url value="http://alexanderkiel.net/bpe/Process/executeSimpleFeasibility"/>
+    <url value="http://highmed.org/bpe/Process/executeSimpleFeasibility"/>
     <!-- version managed by bpe -->
     <version value="bpe-managed"/>
     <name value="executeSimpleFeasibility"/>
