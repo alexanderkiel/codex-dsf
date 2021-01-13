@@ -1,8 +1,8 @@
 package net.alexanderkiel.dsf.bpe.service;
 
+import net.alexanderkiel.dsf.bpe.variables.ConstantsFeasibility;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.highmed.dsf.bpe.delegate.AbstractServiceDelegate;
-import net.alexanderkiel.dsf.bpe.variables.ConstantsFeasibility;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
@@ -37,15 +37,25 @@ public class DownloadMeasureReport extends AbstractServiceDelegate implements In
     }
 
     @Override
-    protected void doExecute(DelegateExecution execution) throws Exception {
+    protected void doExecute(DelegateExecution execution) {
         Task task = getCurrentTaskFromExecutionVariables();
 
         IdType measureReportId = getMeasureReportId(task);
         FhirWebserviceClient client = getWebserviceClient(measureReportId);
-        MeasureReport measureReport = client.read(MeasureReport.class, measureReportId.getIdPart());
+        MeasureReport measureReport = downloadMeasureReport(client, measureReportId);
 
-        int count = measureReport.getGroupFirstRep().getPopulationFirstRep().getCount();
-        execution.setVariable(ConstantsFeasibility.VARIABLE_COUNT, count);
+        MeasureReport.MeasureReportGroupComponent group = measureReport.getGroupFirstRep();
+        group.getCode().addCoding()
+                .setSystem(ConstantsFeasibility.CODESYSTEM_FEASIBILITY)
+                .setCode(ConstantsFeasibility.CODESYSTEM_FEASIBILITY_VALUE_SINGLE_RESULT);
+        group.addExtension(ConstantsFeasibility.EXTENSION_DIC_URI, task.getRequester());
+
+        execution.setVariable(ConstantsFeasibility.VARIABLE_MEASURE_REPORT, measureReport);
+    }
+
+    private MeasureReport downloadMeasureReport(FhirWebserviceClient client, IdType measureReportId) {
+        logger.debug("Download MeasureReport with ID {} from {}", measureReportId.getIdPart(), client.getBaseUrl());
+        return client.read(MeasureReport.class, measureReportId.getIdPart());
     }
 
     private IdType getMeasureReportId(Task task) {
@@ -60,12 +70,12 @@ public class DownloadMeasureReport extends AbstractServiceDelegate implements In
         }
     }
 
-    private FhirWebserviceClient getWebserviceClient(IdType researchStudyId) {
-        if (researchStudyId.getBaseUrl() == null || researchStudyId.getBaseUrl()
+    private FhirWebserviceClient getWebserviceClient(IdType measureReportId) {
+        if (measureReportId.getBaseUrl() == null || measureReportId.getBaseUrl()
                 .equals(getFhirWebserviceClientProvider().getLocalBaseUrl())) {
             return getFhirWebserviceClientProvider().getLocalWebserviceClient();
         } else {
-            return getFhirWebserviceClientProvider().getRemoteWebserviceClient(researchStudyId.getBaseUrl());
+            return getFhirWebserviceClientProvider().getRemoteWebserviceClient(measureReportId.getBaseUrl());
         }
     }
 }

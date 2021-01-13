@@ -29,7 +29,8 @@ public class SendDicRequest extends AbstractTaskMessageSend {
     protected Stream<Task.ParameterComponent> getAdditionalInputParameters(DelegateExecution execution) {
         Task task = getCurrentTaskFromExecutionVariables();
 
-        String measureId = getMeasureId(task);
+        String measureId = getFhirWebserviceClientProvider().getLocalBaseUrl() + "/" + getMeasureId(task);
+        logger.debug("measureId = {}", measureId);
 
         return Stream.of(getTaskHelper().createInput(ConstantsFeasibility.CODESYSTEM_FEASIBILITY,
                 ConstantsFeasibility.CODESYSTEM_FEASIBILITY_VALUE_MEASURE_REFERENCE,

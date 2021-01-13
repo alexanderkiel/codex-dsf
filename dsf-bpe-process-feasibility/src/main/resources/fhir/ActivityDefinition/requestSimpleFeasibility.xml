@@ -39,7 +39,7 @@
 	</extension>
 	<extension url="http://highmed.org/fhir/StructureDefinition/process-authorization">
 		<extension url="message-name">
-			<valueString value="resultMultiMedicSimpleFeasibilityMessage" />
+			<valueString value="resultSingleDicSimpleFeasibilityMessage" />
 		</extension>
 		<extension url="authorization-roles">
 			<extension url="authorization-role">
@@ -66,7 +66,7 @@
 			</extension>
 		</extension>
 		<extension url="task-profile">
-			<valueCanonical value="http://highmed.org/fhir/StructureDefinition/codex-task-multi-medic-result-simple-feasibility" />
+			<valueCanonical value="http://alexanderkiel.net/fhir/StructureDefinition/codex-task-single-dic-result-simple-feasibility" />
 		</extension>
 	</extension>
 	<extension url="http://highmed.org/fhir/StructureDefinition/process-authorization">

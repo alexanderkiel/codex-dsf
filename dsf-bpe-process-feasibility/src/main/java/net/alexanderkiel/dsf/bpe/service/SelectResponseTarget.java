@@ -31,7 +31,7 @@ public class SelectResponseTarget extends AbstractServiceDelegate implements Ini
     }
 
     @Override
-    protected void doExecute(DelegateExecution execution) throws Exception {
+    protected void doExecute(DelegateExecution execution) {
         Task task = getCurrentTaskFromExecutionVariables();
 
         String correlationKey = getTaskHelper()

@@ -415,6 +415,17 @@ public class CertificateGenerator {
     }
 
     public void copyDockerTestCertificates() {
+        X509Certificate testCaCertificate = ca.getCertificate();
+        Path baseFolder = Paths.get("..", "..", "dsf-docker-test-setup", "certs");
+        Path caCertFile = baseFolder.resolve("ca.pem");
+        logger.info("Copying Test CA certificate file to {}", caCertFile.toString());
+        writeCertificate(caCertFile, testCaCertificate);
+
+        CertificateFiles clientCertFiles = clientCertificateFilesByCommonName.get("Webbrowser Test User");
+        Path bpeClientP12File = baseFolder.resolve("test-user.p12");
+        logger.info("Copying Webbrowser Test User certificate p12 file to {}", bpeClientP12File);
+        writeP12File(bpeClientP12File, clientCertFiles.getP12KeyStore());
+
         List<String> commonNames = Arrays.asList("dic-1", "dic-2", "zars");
         commonNames.forEach(cn -> copyProxyFiles("dsf-docker-test-setup/" + cn, cn));
         commonNames.forEach(cn -> copyClientCertFiles("dsf-docker-test-setup/" + cn, cn + "-client"));
@@ -443,12 +454,12 @@ public class CertificateGenerator {
         writePrivateKey(fhirPrivateKeyFile, (RSAPrivateCrtKey) serverCertFiles.getKeyPair().getPrivate());
 
         Path bpeCaCertFile = baseFolder.resolve("bpe/proxy/ssl/ca_certificate.pem");
-        logger.info("Copying Test CA certificate file to {}", bpeCaCertFile.toString());
+        logger.info("Copying Test CA certificate file to {}", bpeCaCertFile);
         writeCertificate(bpeCaCertFile, testCaCertificate);
 
-        Path fhirCacertFile = baseFolder.resolve("fhir/proxy/ssl/ca_certificate.pem");
-        logger.info("Copying Test CA certificate file to {}", fhirCacertFile.toString());
-        writeCertificate(fhirCacertFile, testCaCertificate);
+        Path fhirCaCertFile = baseFolder.resolve("fhir/proxy/ssl/ca_certificate.pem");
+        logger.info("Copying Test CA certificate file to {}", fhirCaCertFile);
+        writeCertificate(fhirCaCertFile, testCaCertificate);
     }
 
     private void copyClientCertFiles(String dockerTestFolder, String commonName) {
@@ -465,7 +476,7 @@ public class CertificateGenerator {
         writeP12File(fhirClientP12File, clientCertFiles.getP12KeyStore());
     }
 
-    private static enum CertificateType {
+    private enum CertificateType {
         CLIENT, SERVER
     }
 

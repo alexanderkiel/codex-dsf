@@ -20,6 +20,10 @@
     <baseDefinition value="http://highmed.org/fhir/StructureDefinition/highmed-task-base"/>
     <derivation value="constraint"/>
     <differential>
+        <element id="Task.instantiatesUri">
+            <path value="Task.instantiatesUri"/>
+            <fixedUri value="http://highmed.org/bpe/Process/requestSimpleFeasibility/0.3.0"/>
+        </element>
         <element id="Task.input">
             <extension url="http://hl7.org/fhir/StructureDefinition/structuredefinition-explicit-type-name">
                 <valueString value="Parameter"/>

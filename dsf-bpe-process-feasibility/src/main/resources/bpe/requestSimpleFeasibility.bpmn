@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0inb4ax" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
-  <bpmn:process id="requestSimpleFeasibility" isExecutable="true" camunda:versionTag="0.1.0">
+  <bpmn:process id="requestSimpleFeasibility" name="storeResult" isExecutable="true" camunda:versionTag="0.3.0">
     <bpmn:startEvent id="StartEvent" name="start">
       <bpmn:outgoing>SequenceFlow_11k77gx</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_10c2suu" messageRef="Message_1pq9qxp" />
@@ -13,7 +13,7 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="processDefinitionKey">executeSimpleFeasibility</camunda:inputParameter>
-          <camunda:inputParameter name="versionTag">0.1.0</camunda:inputParameter>
+          <camunda:inputParameter name="versionTag">0.3.0</camunda:inputParameter>
           <camunda:inputParameter name="messageName">executeSimpleFeasibilityMessage</camunda:inputParameter>
           <camunda:inputParameter name="profile">http://alexanderkiel.net/fhir/StructureDefinition/codex-task-execute-simple-feasibility</camunda:inputParameter>
         </camunda:inputOutput>
@@ -25,20 +25,16 @@
     <bpmn:sequenceFlow id="SequenceFlow_11k77gx" sourceRef="StartEvent" targetRef="selectRequestTargets" />
     <bpmn:sequenceFlow id="SequenceFlow_0b5s4ef" sourceRef="selectRequestTargets" targetRef="sendRequestToDics" />
     <bpmn:endEvent id="EndEvent" name="success">
-      <bpmn:incoming>Flow_0sz2m1q</bpmn:incoming>
       <bpmn:incoming>Flow_1479yc4</bpmn:incoming>
+      <bpmn:incoming>Flow_18jnd4j</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:subProcess id="Activity_1h2vwsh">
       <bpmn:incoming>Flow_0qqdr67</bpmn:incoming>
-      <bpmn:outgoing>Flow_0sz2m1q</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0wm2en5</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics camunda:collection="${targets.entries}" camunda:elementVariable="target" />
       <bpmn:endEvent id="Event_0i55mqk">
-        <bpmn:incoming>Flow_0zhc6bb</bpmn:incoming>
+        <bpmn:incoming>Flow_1kiy9bc</bpmn:incoming>
       </bpmn:endEvent>
-      <bpmn:serviceTask id="Activity_103gahn" name="aggregate query results" camunda:class="net.alexanderkiel.dsf.bpe.service.AggregateResults">
-        <bpmn:incoming>Flow_01228oh</bpmn:incoming>
-        <bpmn:outgoing>Flow_0zhc6bb</bpmn:outgoing>
-      </bpmn:serviceTask>
       <bpmn:receiveTask id="Activity_15y7a7a" name="receive query result from DIC" messageRef="Message_18ld88c">
         <bpmn:extensionElements>
           <camunda:inputOutput>
@@ -51,14 +47,18 @@
       <bpmn:startEvent id="Event_1tvmfdb">
         <bpmn:outgoing>Flow_1iuvnle</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:sequenceFlow id="Flow_0zhc6bb" sourceRef="Activity_103gahn" targetRef="Event_0i55mqk" />
       <bpmn:sequenceFlow id="Flow_1iuvnle" sourceRef="Event_1tvmfdb" targetRef="Activity_15y7a7a" />
       <bpmn:sequenceFlow id="Flow_1mxiy48" sourceRef="Activity_15y7a7a" targetRef="Activity_09o61p4" />
-      <bpmn:sequenceFlow id="Flow_01228oh" sourceRef="Activity_09o61p4" targetRef="Activity_103gahn" />
       <bpmn:serviceTask id="Activity_09o61p4" name="download MeasureReport" camunda:class="net.alexanderkiel.dsf.bpe.service.DownloadMeasureReport">
         <bpmn:incoming>Flow_1mxiy48</bpmn:incoming>
-        <bpmn:outgoing>Flow_01228oh</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1oq6cy1</bpmn:outgoing>
       </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_1oq6cy1" sourceRef="Activity_09o61p4" targetRef="Activity_103gahn" />
+      <bpmn:serviceTask id="Activity_103gahn" name="aggregate query results" camunda:class="net.alexanderkiel.dsf.bpe.service.AggregateResults">
+        <bpmn:incoming>Flow_1oq6cy1</bpmn:incoming>
+        <bpmn:outgoing>Flow_1kiy9bc</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_1kiy9bc" sourceRef="Activity_103gahn" targetRef="Event_0i55mqk" />
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="Event_13wq5pb" attachedToRef="Activity_1h2vwsh">
       <bpmn:outgoing>Flow_1479yc4</bpmn:outgoing>
@@ -67,12 +67,16 @@
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_0qqdr67" sourceRef="sendRequestToDics" targetRef="Activity_1h2vwsh" />
-    <bpmn:sequenceFlow id="Flow_0sz2m1q" sourceRef="Activity_1h2vwsh" targetRef="EndEvent" />
     <bpmn:sequenceFlow id="Flow_1479yc4" sourceRef="Event_13wq5pb" targetRef="EndEvent" />
+    <bpmn:sequenceFlow id="Flow_0wm2en5" sourceRef="Activity_1h2vwsh" targetRef="storeResult" />
+    <bpmn:sequenceFlow id="Flow_18jnd4j" sourceRef="storeResult" targetRef="EndEvent" />
+    <bpmn:serviceTask id="storeResult" name="store result" camunda:class="net.alexanderkiel.dsf.bpe.service.StoreResult">
+      <bpmn:incoming>Flow_0wm2en5</bpmn:incoming>
+      <bpmn:outgoing>Flow_18jnd4j</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmn:message id="Message_1pq9qxp" name="requestSimpleFeasibilityMessage" />
   <bpmn:message id="Message_07ayhv1" name="resultSimpleFeasibilityMessage" />
-  <bpmn:message id="Message_0gifb86" name="computeSimpleFeasibilityMessage" />
   <bpmn:error id="Error_0dl03kn" />
   <bpmn:error id="Error_07exqe7" />
   <bpmn:error id="Error_1jhmarr" />
@@ -86,14 +90,14 @@
   <bpmn:message id="Message_18ld88c" name="resultSingleDicSimpleFeasibilityMessage" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="requestSimpleFeasibility">
-      <bpmndi:BPMNEdge id="Flow_1479yc4_di" bpmnElement="Flow_1479yc4">
-        <di:waypoint x="1298" y="217" />
-        <di:waypoint x="1400" y="217" />
-        <di:waypoint x="1400" y="173" />
+      <bpmndi:BPMNEdge id="Flow_0wm2en5_di" bpmnElement="Flow_0wm2en5">
+        <di:waypoint x="1210" y="155" />
+        <di:waypoint x="1290" y="155" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0sz2m1q_di" bpmnElement="Flow_0sz2m1q">
-        <di:waypoint x="1280" y="155" />
-        <di:waypoint x="1382" y="155" />
+      <bpmndi:BPMNEdge id="Flow_1479yc4_di" bpmnElement="Flow_1479yc4">
+        <di:waypoint x="1228" y="217" />
+        <di:waypoint x="1510" y="217" />
+        <di:waypoint x="1510" y="173" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0qqdr67_di" bpmnElement="Flow_0qqdr67">
         <di:waypoint x="530" y="155" />
@@ -106,6 +110,10 @@
       <bpmndi:BPMNEdge id="SequenceFlow_11k77gx_di" bpmnElement="SequenceFlow_11k77gx">
         <di:waypoint x="188" y="155" />
         <di:waypoint x="270" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18jnd4j_di" bpmnElement="Flow_18jnd4j">
+        <di:waypoint x="1390" y="155" />
+        <di:waypoint x="1492" y="155" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_1ozsjmr_di" bpmnElement="StartEvent">
         <dc:Bounds x="152" y="137" width="36" height="36" />
@@ -120,17 +128,24 @@
         <dc:Bounds x="430" y="115" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_18syky8_di" bpmnElement="EndEvent">
-        <dc:Bounds x="1382" y="137" width="36" height="36" />
+        <dc:Bounds x="1492" y="137" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1380" y="113" width="40" height="14" />
+          <dc:Bounds x="1490" y="113" width="40" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1h2vwsh_di" bpmnElement="Activity_1h2vwsh" isExpanded="true">
-        <dc:Bounds x="580" y="83" width="700" height="134" />
+      <bpmndi:BPMNShape id="Activity_19mrkqr_di" bpmnElement="storeResult">
+        <dc:Bounds x="1290" y="115" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_01228oh_di" bpmnElement="Flow_01228oh">
+      <bpmndi:BPMNShape id="Activity_1h2vwsh_di" bpmnElement="Activity_1h2vwsh" isExpanded="true">
+        <dc:Bounds x="580" y="83" width="630" height="134" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1kiy9bc_di" bpmnElement="Flow_1kiy9bc">
+        <di:waypoint x="1080" y="152" />
+        <di:waypoint x="1152" y="152" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oq6cy1_di" bpmnElement="Flow_1oq6cy1">
         <di:waypoint x="930" y="152" />
-        <di:waypoint x="990" y="152" />
+        <di:waypoint x="980" y="152" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1mxiy48_di" bpmnElement="Flow_1mxiy48">
         <di:waypoint x="777" y="152" />
@@ -140,15 +155,8 @@
         <di:waypoint x="638" y="152" />
         <di:waypoint x="677" y="152" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0zhc6bb_di" bpmnElement="Flow_0zhc6bb">
-        <di:waypoint x="1090" y="152" />
-        <di:waypoint x="1152" y="152" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0i55mqk_di" bpmnElement="Event_0i55mqk">
         <dc:Bounds x="1152" y="134" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_103gahn_di" bpmnElement="Activity_103gahn">
-        <dc:Bounds x="990" y="112" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_15y7a7a_di" bpmnElement="Activity_15y7a7a">
         <dc:Bounds x="677" y="112" width="100" height="80" />
@@ -159,8 +167,11 @@
       <bpmndi:BPMNShape id="Activity_1l7gm0z_di" bpmnElement="Activity_09o61p4">
         <dc:Bounds x="830" y="112" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_103gahn_di" bpmnElement="Activity_103gahn">
+        <dc:Bounds x="980" y="112" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_13wq5pb_di" bpmnElement="Event_13wq5pb">
-        <dc:Bounds x="1262" y="199" width="36" height="36" />
+        <dc:Bounds x="1192" y="199" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -63,12 +63,12 @@ public class DownloadFeasibilityResources extends AbstractServiceDelegate implem
         }
     }
 
-    private FhirWebserviceClient getWebserviceClient(IdType researchStudyId) {
-        if (researchStudyId.getBaseUrl() == null || researchStudyId.getBaseUrl()
-                .equals(getFhirWebserviceClientProvider().getLocalBaseUrl())) {
+    private FhirWebserviceClient getWebserviceClient(IdType measureId) {
+        if (measureId.getBaseUrl() == null ||
+                measureId.getBaseUrl().equals(getFhirWebserviceClientProvider().getLocalBaseUrl())) {
             return getFhirWebserviceClientProvider().getLocalWebserviceClient();
         } else {
-            return getFhirWebserviceClientProvider().getRemoteWebserviceClient(researchStudyId.getBaseUrl());
+            return getFhirWebserviceClientProvider().getRemoteWebserviceClient(measureId.getBaseUrl());
         }
     }
 

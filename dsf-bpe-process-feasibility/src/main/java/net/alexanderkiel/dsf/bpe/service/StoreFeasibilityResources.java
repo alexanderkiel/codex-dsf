@@ -10,11 +10,15 @@ import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.IdType;
 import org.hl7.fhir.r4.model.Library;
 import org.hl7.fhir.r4.model.Measure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.util.Objects;
 
 public class StoreFeasibilityResources extends AbstractServiceDelegate implements InitializingBean {
+
+    private static final Logger logger = LoggerFactory.getLogger(StoreFeasibilityResources.class);
 
     private final IGenericClient storeClient;
 
@@ -33,7 +37,7 @@ public class StoreFeasibilityResources extends AbstractServiceDelegate implement
     }
 
     @Override
-    protected void doExecute(DelegateExecution execution) throws Exception {
+    protected void doExecute(DelegateExecution execution) {
         Measure measure = (Measure) execution.getVariable(ConstantsFeasibility.VARIABLE_MEASURE);
         Library library = (Library) execution.getVariable(ConstantsFeasibility.VARIABLE_LIBRARY);
 
@@ -43,6 +47,8 @@ public class StoreFeasibilityResources extends AbstractServiceDelegate implement
     }
 
     private Bundle storeResources(Measure measure, Library library) {
+        logger.info("Store Measure `{}` and Library `{}`", measure.getId(), library.getUrl());
+
         Bundle bundle = new Bundle().setType(Bundle.BundleType.TRANSACTION);
         bundle.addEntry().setResource(measure).getRequest()
                 .setMethod(Bundle.HTTPVerb.POST).setUrl("Measure");

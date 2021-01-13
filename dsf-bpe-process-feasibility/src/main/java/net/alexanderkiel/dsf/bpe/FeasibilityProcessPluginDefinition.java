@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 public class FeasibilityProcessPluginDefinition implements ProcessPluginDefinition {
 
-    public static final String VERSION = "0.1.0";
+    public static final String VERSION = "0.3.0";
 
     @Override
     public String getName() {
@@ -47,6 +47,9 @@ public class FeasibilityProcessPluginDefinition implements ProcessPluginDefiniti
 
         var cF = CodeSystemResource.file("fhir/CodeSystem/feasibility.xml");
 
+        var sExtDic = StructureDefinitionResource
+                .file("fhir/StructureDefinition/codex-extension-dic.xml");
+
         var sTExe = StructureDefinitionResource
                 .file("fhir/StructureDefinition/codex-task-execute-simple-feasibility.xml");
         var sTReq = StructureDefinitionResource
@@ -60,7 +63,7 @@ public class FeasibilityProcessPluginDefinition implements ProcessPluginDefiniti
                 "executeSimpleFeasibility/" + VERSION,
                 Arrays.asList(aExe, sTExe, sTResS, vF, cF),
                 "requestSimpleFeasibility/" + VERSION,
-                Arrays.asList(aReq, sTReq, vF, cF));
+                Arrays.asList(aReq, sTReq, sExtDic, vF, cF));
 
         return ResourceProvider.read(VERSION,
                 () -> fhirContext.newXmlParser().setStripVersionsFromReferences(false),

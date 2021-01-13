@@ -36,7 +36,7 @@ public class SelectRequestTargets extends AbstractServiceDelegate {
     }
 
     @Override
-    protected void doExecute(DelegateExecution execution) throws Exception {
+    protected void doExecute(DelegateExecution execution) {
         List<Target> targets = organizationProvider.getRemoteIdentifiers().stream().map(identifier -> Target
                 .createBiDirectionalTarget(identifier.getValue(), UUID.randomUUID().toString()))
                 .collect(Collectors.toList());

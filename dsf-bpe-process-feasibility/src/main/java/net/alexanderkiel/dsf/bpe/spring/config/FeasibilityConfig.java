@@ -12,6 +12,7 @@ import net.alexanderkiel.dsf.bpe.service.SelectRequestTargets;
 import net.alexanderkiel.dsf.bpe.service.SelectResponseTarget;
 import net.alexanderkiel.dsf.bpe.service.StoreFeasibilityResources;
 import net.alexanderkiel.dsf.bpe.service.StoreMeasureReport;
+import net.alexanderkiel.dsf.bpe.service.StoreResult;
 import org.highmed.dsf.fhir.client.FhirWebserviceClientProvider;
 import org.highmed.dsf.fhir.organization.OrganizationProvider;
 import org.highmed.dsf.fhir.task.TaskHelper;
@@ -61,6 +62,11 @@ public class FeasibilityConfig {
     @Bean
     public AggregateResults aggregateResults() {
         return new AggregateResults(fhirClientProvider, taskHelper);
+    }
+
+    @Bean
+    public StoreResult storeResult() {
+        return new StoreResult(fhirClientProvider, taskHelper);
     }
 
     //

@@ -30,4 +30,14 @@
         <display value="MeasureReport Reference"/>
         <definition value="Codex MeasureReport Reference to specify the feasibility query result"/>
     </concept>
+    <concept>
+        <code value="single"/>
+        <display value="Single DIC Result"/>
+        <definition value="The MeasureReport group represents the result from a single DIC."/>
+    </concept>
+    <concept>
+        <code value="aggregated"/>
+        <display value="Aggregated Result"/>
+        <definition value="The MeasureReport group represents the aggregated result from multiple DICs."/>
+    </concept>
 </CodeSystem>

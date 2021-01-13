@@ -34,6 +34,7 @@
 	</Appenders>
 
 	<Loggers>
+		<Logger name="net.alexanderkiel.dsf.bpe" level="TRACE"/>
 		<Logger name="org.highmed" level="TRACE"/>
 		<logger name="de.rwh" level="DEBUG"/>
 		<Logger name="org.apache" level="WARN"/>

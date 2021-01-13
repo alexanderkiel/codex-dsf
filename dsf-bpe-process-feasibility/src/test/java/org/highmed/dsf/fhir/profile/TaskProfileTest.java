@@ -50,7 +50,7 @@ public class TaskProfileTest {
         Task task = new Task();
         task.getMeta()
                 .addProfile("http://alexanderkiel.net/fhir/StructureDefinition/codex-task-request-simple-feasibility");
-        task.setInstantiatesUri("http://highmed.org/bpe/Process/requestSimpleFeasibility/0.1.0");
+        task.setInstantiatesUri("http://highmed.org/bpe/Process/requestSimpleFeasibility/0.3.0");
         task.setStatus(TaskStatus.REQUESTED);
         task.setIntent(TaskIntent.ORDER);
         task.setAuthoredOn(new Date());
@@ -82,7 +82,7 @@ public class TaskProfileTest {
         Task task = new Task();
         task.getMeta()
                 .addProfile("http://alexanderkiel.net/fhir/StructureDefinition/codex-task-execute-simple-feasibility");
-        task.setInstantiatesUri("http://highmed.org/bpe/Process/executeSimpleFeasibility/0.1.0");
+        task.setInstantiatesUri("http://highmed.org/bpe/Process/executeSimpleFeasibility/0.3.0");
         task.setStatus(TaskStatus.REQUESTED);
         task.setIntent(TaskIntent.ORDER);
         task.setAuthoredOn(new Date());
@@ -118,7 +118,7 @@ public class TaskProfileTest {
         Task task = new Task();
         task.getMeta().addProfile(
                 "http://alexanderkiel.net/fhir/StructureDefinition/codex-task-single-dic-result-simple-feasibility");
-        task.setInstantiatesUri("http://highmed.org/bpe/Process/computeSimpleFeasibility/0.1.0");
+        task.setInstantiatesUri("http://highmed.org/bpe/Process/requestSimpleFeasibility/0.3.0");
         task.setStatus(TaskStatus.REQUESTED);
         task.setIntent(TaskIntent.ORDER);
         task.setAuthoredOn(new Date());
